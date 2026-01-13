@@ -1,6 +1,6 @@
 resources:
   dashboards:
     earthquake_monitor:
-      display_name: "earthquake_dashboard"
+      display_name: "earthquake_dashboard_prod"
       file_path: ../src/Dashboard/earthquake_dashboard.lvdash.json
       warehouse_id: ${var.warehouse_id}
