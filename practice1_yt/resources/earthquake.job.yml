@@ -1,0 +1,32 @@
+resources:
+  jobs:
+    youtube_earthquake_end_end_job:
+      name: youtube_earthquake_end_end_job
+      tasks:
+        - task_key: ingestion_bronze
+          notebook_task:
+            notebook_path: ../src/notebooks/ingestion_bronze.ipynb
+            base_parameters:
+              catalog_name:  ${var.catalog}
+            source: WORKSPACE
+        - task_key: Bronze_Silver_earthquake
+          depends_on:
+            - task_key: ingestion_bronze
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.bronze_silver_earthquake_etl.id}
+            full_refresh: false
+        - task_key: Earthquake_dashboard
+          depends_on:
+            - task_key: Bronze_Silver_earthquake
+          dashboard_task:
+            subscription:
+              subscribers:
+                - user_name: deepikaapple025@gmail.com
+            warehouse_id: 913fb87931e3d9d6
+            dashboard_id: 01f0efd80b4512749d7106cd95cc8b61
+      queue:
+        enabled: true
+      parameters:
+        - name: catalog_name
+          default: ${var.catalog}
+      performance_target: PERFORMANCE_OPTIMIZED
